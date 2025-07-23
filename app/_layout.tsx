@@ -10,18 +10,22 @@ import {
 import { useFonts } from "expo-font";
 
 export default function RootLayout() {
+
+
   useFonts({
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
   });
+
+
   return (
     <PrivyProvider
       appId={Constants.expoConfig?.extra?.privyAppId}
       clientId={Constants.expoConfig?.extra?.privyClientId}
     >
       <Stack>
-        <Stack.Screen name="index" />
+        <Stack.Screen name="dashboard" options={{headerShown: false}} />
       </Stack>
       <PrivyElements />
     </PrivyProvider>

@@ -13,6 +13,7 @@ import {
 import Constants from "expo-constants";
 import { useLinkWithPasskey } from "@privy-io/expo/passkey";
 import { PrivyUser } from "@privy-io/public-api";
+import { router } from "expo-router";
 
 const toMainIdentifier = (x: PrivyUser["linked_accounts"][number]) => {
   if (x.type === "phone") {
@@ -171,7 +172,10 @@ export const UserScreen = () => {
               </React.Fragment>
             ))}
           </View> */}
-          <Button title="Logout" onPress={logout} />
+          <Button title="Logout" onPress={() => {
+            logout();
+            router.replace("/");
+          }} />
         </View>
       </ScrollView>
     </View>
