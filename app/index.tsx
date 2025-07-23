@@ -3,9 +3,11 @@ import Constants from "expo-constants";
 import LoginScreen from "@/components/LoginScreen";
 import { usePrivy } from "@privy-io/expo";
 import { UserScreen } from "@/components/UserScreen";
+import { Redirect } from "expo-router";
 
 export default function Index() {
   const { user } = usePrivy();
+
   if ((Constants.expoConfig?.extra?.privyAppId as string).length !== 25) {
     return (
       <SafeAreaView>
@@ -21,6 +23,7 @@ export default function Index() {
       </SafeAreaView>
     );
   }
+
   if (
     !(Constants.expoConfig?.extra?.privyClientId as string).startsWith(
       "client-"
@@ -40,5 +43,6 @@ export default function Index() {
       </SafeAreaView>
     );
   }
-  return !user ? <LoginScreen /> : <UserScreen />;
+
+  return !user ? <LoginScreen /> : <Redirect href="/dashboard/home" />;
 }
