@@ -4,6 +4,7 @@ import { usePrivy, getUserEmbeddedSolanaWallet, useEmbeddedSolanaWallet } from "
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View, StyleSheet, ScrollView } from "react-native";
 import { Image } from "expo-image";
+import { Ionicons } from "@expo/vector-icons";
 
 
 const toMainIdentifier = (x: PrivyUser["linked_accounts"][number]) => {
@@ -37,7 +38,7 @@ export default function Home() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
                 <View style={styles.banner}>
                     <View style={{ flex: 1, padding: 8 }}>
@@ -53,10 +54,38 @@ export default function Home() {
                         style={{ width: 64, height: 64 }}
                     />
                 </View>
-                <View style={{ flex: 1, backgroundColor: "#fff", padding: 16 }}>
-                    <View style={{ flexDirection: "row", marginBottom: 16 }}>
-                        <View style={[styles.card, { flex: 1 }]}>
-                            <Text style={styles.cardText}>Card 112</Text>
+                <View style={{ flex: 1, padding: 16 }}>
+                    <View style={{ marginBottom: 16 }}>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 12, color: '#2d2d2d' }}>
+                            Payments
+                        </Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                            {[
+                                { name: 'card', label: 'Card' },
+                                { name: 'cash', label: 'Cash' },
+                                { name: 'qr-code', label: 'QR Code' },
+                                { name: 'swap-horizontal', label: 'Transfer' }
+                            ].map((item, idx) => (
+                                <View key={item.name} style={{ alignItems: 'center', flex: 1 }}>
+                                    <View style={{
+                                        width: 56,
+                                        height: 56,
+                                        borderRadius: 28,
+                                        backgroundColor: '#f2f2f2',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        marginBottom: 6,
+                                        shadowColor: '#000',
+                                        shadowOffset: { width: 0, height: 1 },
+                                        shadowOpacity: 0.08,
+                                        shadowRadius: 2,
+                                        elevation: 1,
+                                    }}>
+                                        <Ionicons name={item.name as any} size={28} color="#2d2d2d" />
+                                    </View>
+                                    <Text style={{ fontSize: 13, color: '#555' }}>{item.label}</Text>
+                                </View>
+                            ))}
                         </View>
                     </View>
 
@@ -119,14 +148,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#f5f7ff',
-        borderRadius: 16,
-        padding: 20,
-        marginBottom: 24,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
-        elevation: 2,
+        paddingBottom: 24,
+        paddingTop: 24,
+        marginBottom: 8,
     }
 });
 
