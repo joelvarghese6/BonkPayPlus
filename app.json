@@ -50,6 +50,14 @@
           }
         }
       ],
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "BonkPay needs access to your Camera.",
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "BonkPay needs access to your Microphone."
+        }
+      ],
       "expo-font"
     ],
     "experiments": {

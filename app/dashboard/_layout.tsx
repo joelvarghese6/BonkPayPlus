@@ -14,7 +14,7 @@ export default function DashboardLayout() {
                 }}
                 listeners={{
                     tabPress: (e) => {
-                        e.preventDefault();
+                        //e.preventDefault();
                         console.log("tabPress");
                     }
                 }}

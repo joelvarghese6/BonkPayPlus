@@ -61,10 +61,10 @@ export default function Home() {
                         </Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
                             {[
-                                { name: 'card', label: 'Card' },
-                                { name: 'cash', label: 'Cash' },
-                                { name: 'qr-code', label: 'QR Code' },
-                                { name: 'swap-horizontal', label: 'Transfer' }
+                                { name: 'qr-code', label: 'Scan QR' },
+                                { name: 'send', label: 'To Public Key' },
+                                { name: 'arrow-down', label: 'Recieve' },
+                                { name: 'wallet', label: 'Portfolio' }
                             ].map((item, idx) => (
                                 <View key={item.name} style={{ alignItems: 'center', flex: 1 }}>
                                     <View style={{
@@ -92,10 +92,10 @@ export default function Home() {
                     {/* Row 2: 2 cards */}
                     <View style={{ flexDirection: "row", marginBottom: 16 }}>
                         <View style={[styles.card, { flex: 1, marginRight: 8 }]}>
-                            <Text style={styles.cardText}>Card 2</Text>
+                            <Text style={styles.cardText}>Loans</Text>
                         </View>
                         <View style={[styles.card, { flex: 1, marginLeft: 8 }]}>
-                            <Text style={styles.cardText}>Card 3</Text>
+                            <Text style={styles.cardText}>Staking</Text>
                         </View>
                     </View>
 
@@ -104,16 +104,16 @@ export default function Home() {
                         {/* Left column: 2 stacked cards */}
                         <View style={{ flex: 1, marginRight: 8, justifyContent: 'space-between' }}>
                             <View style={[styles.card, { flex: 1, marginBottom: 8 }]}>
-                                <Text style={styles.cardText}>Card 4</Text>
+                                <Text style={styles.cardText}>Swap Tokens</Text>
                             </View>
                             <View style={[styles.card, { flex: 1, marginTop: 8 }]}>
-                                <Text style={styles.cardText}>Card 55555</Text>
+                                <Text style={styles.cardText}>Buy SOL</Text>
                             </View>
                         </View>
                         {/* Right column: 1 tall card */}
                         <View style={{ flex: 1, marginLeft: 8 }}>
                             <View style={[styles.card, { flex: 2, height: '100%', justifyContent: 'center' }]}>
-                                <Text style={styles.cardText}>Card 6</Text>
+                                <Text style={styles.cardText}>Lock BONK</Text>
                             </View>
                         </View>
                     </View>
@@ -149,8 +149,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#f5f7ff',
         paddingBottom: 24,
-        paddingTop: 24,
+        padding: 16,
         marginBottom: 8,
+        marginLeft: 12,
+        marginRight: 12,
+        borderRadius: 12,
     }
 });
 
