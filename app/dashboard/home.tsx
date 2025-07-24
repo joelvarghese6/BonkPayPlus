@@ -2,40 +2,13 @@ import { UserScreen } from "@/components/UserScreen";
 import { PrivyUser } from "@privy-io/public-api";
 import { usePrivy, getUserEmbeddedSolanaWallet, useEmbeddedSolanaWallet } from "@privy-io/expo";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, View, StyleSheet, ScrollView } from "react-native";
+import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-
-
-const toMainIdentifier = (x: PrivyUser["linked_accounts"][number]) => {
-    if (x.type === "phone") {
-        return x.phoneNumber;
-    }
-    if (x.type === "email" || x.type === "wallet") {
-        return x.address;
-    }
-
-    if (x.type === "twitter_oauth" || x.type === "tiktok_oauth") {
-        return x.username;
-    }
-
-    if (x.type === "custom_auth") {
-        return x.custom_user_id;
-    }
-
-    return x.type;
-};
+import { router } from "expo-router";
 
 
 export default function Home() {
-
-    const { logout, user } = usePrivy();
-    const account = getUserEmbeddedSolanaWallet(user);
-
-
-    if (!user) {
-        return null;
-    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -61,13 +34,13 @@ export default function Home() {
                         </Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
                             {[
-                                { name: 'qr-code', label: 'Scan QR' },
-                                { name: 'send', label: 'To Public Key' },
-                                { name: 'arrow-down', label: 'Recieve' },
-                                { name: 'wallet', label: 'Portfolio' }
+                                { name: 'qr-code', label: 'Scan QR', route: '/dashboard/custom' },
+                                { name: 'send', label: 'To Public Key', route: '/dashboard/send' },
+                                { name: 'arrow-down', label: 'Recieve', route: '/dashboard/receive' },
+                                { name: 'wallet', label: 'Portfolio', route: '/dashboard/portfolio' }
                             ].map((item, idx) => (
                                 <View key={item.name} style={{ alignItems: 'center', flex: 1 }}>
-                                    <View style={{
+                                    <Pressable onPress={() => router.push(item.route as any)} style={{
                                         width: 56,
                                         height: 56,
                                         borderRadius: 28,
@@ -82,7 +55,7 @@ export default function Home() {
                                         elevation: 1,
                                     }}>
                                         <Ionicons name={item.name as any} size={28} color="#2d2d2d" />
-                                    </View>
+                                    </Pressable>
                                     <Text style={{ fontSize: 13, color: '#555' }}>{item.label}</Text>
                                 </View>
                             ))}

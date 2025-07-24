@@ -10,11 +10,14 @@ export default function DashboardLayout() {
             <Tabs.Screen
                 name="custom"
                 options={{
-                    tabBarButton: SpecialTabButton
+                    tabBarButton: SpecialTabButton,
+                    tabBarStyle: {
+                        display: "none"
+                    }
                 }}
                 listeners={{
                     tabPress: (e) => {
-                        //e.preventDefault();
+                        e.preventDefault();
                         console.log("tabPress");
                     }
                 }}

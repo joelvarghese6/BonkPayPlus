@@ -2,11 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 //import * as Haptics from 'expo-haptics';
 import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { ScanQrCode } from 'lucide-react-native'
+import { router } from 'expo-router';
 
 export const SpecialTabButton = () => {
 	const handlePress = () => {
 		//Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-		Alert.alert('Special Tab Button');
+		router.push('/dashboard/custom');
 	};
 
 	return (
