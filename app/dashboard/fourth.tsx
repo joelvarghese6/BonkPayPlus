@@ -29,9 +29,9 @@ export default function Fourth() {
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', padding: 20 }}>
       {/* Top Section */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 24 }}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={36} color="#888" />
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 24, marginHorizontal: 8 }}>
+        <View style={styles.avatarSmall}>
+          <Ionicons name="person" size={26} color="#888" />
         </View>
         <View style={{ marginLeft: 16, flex: 1 }}>
           <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#222' }}>{user.name}</Text>
@@ -79,10 +79,10 @@ export default function Fourth() {
 }
 
 const styles = StyleSheet.create({
-  avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+  avatarSmall: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
     backgroundColor: '#f2f2f2',
     alignItems: 'center',
     justifyContent: 'center',
