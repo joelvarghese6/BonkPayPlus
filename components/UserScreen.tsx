@@ -172,8 +172,8 @@ export const UserScreen = () => {
               </React.Fragment>
             ))}
           </View> */}
-          <Button title="Logout" onPress={() => {
-            logout();
+          <Button title="Logout" onPress={async () => {
+            await logout();
             router.replace("/");
           }} />
         </View>
