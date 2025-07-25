@@ -27,6 +27,8 @@ export const PaymentScreen = ({ onBack, onSubmit, recipient = "ERZASDER" }: Paym
     const [amount, setAmount] = useState("");
     const [showConfirmSheet, setShowConfirmSheet] = useState(false);
 
+    const to = "0x1234567890abcdef1234567890abcdef12345678";
+
     const handleKeyPress = (key: string) => {
         if (key === "del") {
             setAmount(a => a.slice(0, -1));
@@ -98,7 +100,7 @@ export const PaymentScreen = ({ onBack, onSubmit, recipient = "ERZASDER" }: Paym
                 </View>
             </View>
             {showConfirmSheet && (
-                <ConfirmPayment visible={showConfirmSheet} onClose={() => setShowConfirmSheet(false)} />
+                <ConfirmPayment visible={showConfirmSheet} onClose={() => setShowConfirmSheet(false)} data={{ amount, to }} />
             )}
         </SafeAreaView>
     );

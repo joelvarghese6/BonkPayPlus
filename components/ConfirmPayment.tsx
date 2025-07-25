@@ -19,9 +19,13 @@ const TRACK_HEIGHT = 64;
 type ConfirmPaymentProps = {
   visible?: boolean;
   onClose?: () => void;
+  data: {
+    amount: string;
+    to: string;
+  };
 };
 
-const ConfirmPayment = ({ visible = true, onClose }: ConfirmPaymentProps) => {
+const ConfirmPayment = ({ visible = true, onClose, data }: ConfirmPaymentProps) => {
 
     const { closePaymentModal } = usePaymentModal();
     // ref
@@ -47,7 +51,7 @@ const ConfirmPayment = ({ visible = true, onClose }: ConfirmPaymentProps) => {
     const onHandlerStateChange = (event: any) => {
         if (event.nativeEvent.state === State.END) {
             let finalX = event.nativeEvent.translationX;
-            if (finalX > MAX_TRANSLATE * 0.85) {
+            if (finalX > MAX_TRANSLATE * 0.85) { 
                 setSwiped(true);
                 Animated.timing(translateX, {
                     toValue: MAX_TRANSLATE,
@@ -91,11 +95,11 @@ const ConfirmPayment = ({ visible = true, onClose }: ConfirmPaymentProps) => {
                 <View style={styles.iconCircle}>
                     <Ionicons name="logo-usd" size={36} color="#222" />
                 </View>
-                <Text style={styles.amountText}>{AMOUNT}</Text>
+                <Text style={styles.amountText}>{data.amount}</Text>
                 <Text style={styles.fiatText}>{FIAT}</Text>
                 <Text style={styles.toLabel}>To</Text>
                 <Text style={styles.addressText} numberOfLines={1} ellipsizeMode="middle">
-                    {ADDRESS.slice(0, 6)}...{ADDRESS.slice(-4)}
+                    {data.to.slice(0, 6)}...{data.to.slice(-4)}
                 </Text>
                 <View style={styles.swipeContainer}>
                     <View style={styles.swipeTrack}>
