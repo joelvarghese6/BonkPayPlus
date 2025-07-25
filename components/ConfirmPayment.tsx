@@ -4,6 +4,7 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
+import { usePaymentModal } from '@/store/PaymentModal';
 
 const ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const AMOUNT = '0.1421';
@@ -11,7 +12,6 @@ const FIAT = '$8.05';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_WIDTH = SCREEN_WIDTH * 0.7;
-const SWIPE_THRESHOLD = SWIPE_WIDTH * 0.6;
 
 const THUMB_SIZE = 64;
 const TRACK_HEIGHT = 64;
@@ -22,6 +22,8 @@ type ConfirmPaymentProps = {
 };
 
 const ConfirmPayment = ({ visible = true, onClose }: ConfirmPaymentProps) => {
+
+    const { closePaymentModal } = usePaymentModal();
     // ref
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['50%'], []);
@@ -55,6 +57,7 @@ const ConfirmPayment = ({ visible = true, onClose }: ConfirmPaymentProps) => {
                     Alert.alert('Approved', 'Payment approved!');
                     router.replace('/dashboard/home');
                     bottomSheetRef.current?.close();
+                    closePaymentModal();
                     setTimeout(() => {
                         setSwiped(false);
                         translateX.setValue(0);
@@ -81,7 +84,7 @@ const ConfirmPayment = ({ visible = true, onClose }: ConfirmPaymentProps) => {
             ref={bottomSheetRef}
             onChange={handleSheetChanges}
             snapPoints={snapPoints}
-            index={visible ? 1 : 0}
+            index={1}
         >
             <BottomSheetView style={styles.contentContainer}>
                 <Text style={styles.sendText}>Send</Text>

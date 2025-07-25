@@ -75,7 +75,6 @@ export default function Fourth() {
           </TouchableOpacity>
         ))}
       </View>
-      <ConfirmPayment />
     </View>
   );
 }
