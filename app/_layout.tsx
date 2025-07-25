@@ -8,6 +8,7 @@ import {
   Inter_600SemiBold,
 } from "@expo-google-fonts/inter";
 import { useFonts } from "expo-font";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootLayout() {
 
@@ -24,10 +25,12 @@ export default function RootLayout() {
       appId={Constants.expoConfig?.extra?.privyAppId}
       clientId={Constants.expoConfig?.extra?.privyClientId}
     >
-      <Stack>
-        <Stack.Screen name="dashboard" options={{headerShown: false}} />
-      </Stack>
-      <PrivyElements />
+      <GestureHandlerRootView>
+        <Stack>
+          <Stack.Screen name="dashboard" options={{headerShown: false}} />
+        </Stack>
+        <PrivyElements />
+      </GestureHandlerRootView>
     </PrivyProvider>
   );
 }

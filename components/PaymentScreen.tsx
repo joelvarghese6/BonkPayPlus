@@ -1,6 +1,7 @@
 import { View, Text, Pressable, StyleSheet, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import ConfirmPayment from "./ConfirmPayment";
 
 type PaymentScreenProps = {
     onBack: () => void;
@@ -24,6 +25,7 @@ function formatFiat(amount: string) {
 
 export const PaymentScreen = ({ onBack, onSubmit, recipient = "ERZASDER" }: PaymentScreenProps) => {
     const [amount, setAmount] = useState("");
+    const [showConfirmSheet, setShowConfirmSheet] = useState(false);
 
     const handleKeyPress = (key: string) => {
         if (key === "del") {
@@ -88,13 +90,16 @@ export const PaymentScreen = ({ onBack, onSubmit, recipient = "ERZASDER" }: Paym
                 <View style={styles.keyboardRow}>
                     <Pressable
                         style={[styles.continueButton, (!amount || isNaN(Number(amount)) || Number(amount) <= 0) && { backgroundColor: '#ccc' }]}
-                        onPress={() => onSubmit && onSubmit(amount)}
+                        onPress={() => setShowConfirmSheet(true)}
                         disabled={!amount || isNaN(Number(amount)) || Number(amount) <= 0}
                     >
                         <Text style={styles.continueText}>Continue</Text>
                     </Pressable>
                 </View>
             </View>
+            {showConfirmSheet && (
+                <ConfirmPayment visible={showConfirmSheet} onClose={() => setShowConfirmSheet(false)} />
+            )}
         </SafeAreaView>
     );
 };

@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from 'expo-clipboard';
+import ConfirmPayment from "@/components/ConfirmPayment";
 
 const user = {
   name: "Jane Doe",
@@ -74,6 +75,7 @@ export default function Fourth() {
           </TouchableOpacity>
         ))}
       </View>
+      <ConfirmPayment />
     </View>
   );
 }
