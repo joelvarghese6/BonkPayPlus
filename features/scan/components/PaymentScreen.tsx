@@ -1,11 +1,11 @@
 import { View, Text, Pressable, StyleSheet, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ConfirmPayment from "@/features/scan/components/ConfirmPayment";
+import { usePaymentModal } from "../store/PaymentModal";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 type PaymentScreenProps = {
-    onBack: () => void;
-    onSubmit?: (amount: string) => void;
     recipient?: string;
 };
 
@@ -23,11 +23,21 @@ function formatFiat(amount: string) {
     return `$${(num * 1).toFixed(2)}`;
 }
 
-export const PaymentScreen = ({ onBack, onSubmit, recipient = "ERZASDER" }: PaymentScreenProps) => {
-    const [amount, setAmount] = useState("");
-    const [showConfirmSheet, setShowConfirmSheet] = useState(false);
+export const PaymentScreen = ({ recipient = "ERZASDER" }: PaymentScreenProps) => {
 
-    const to = "0x1234567890abcdef1234567890abcdef12345678";
+    const bottomSheetRef = useRef<BottomSheet>(null);
+
+    const handleOpen = () => {
+        bottomSheetRef.current?.expand();
+    };
+
+    const handleClose = () => {
+        bottomSheetRef.current?.close();
+    };
+
+    const { closePaymentModal } = usePaymentModal();
+
+    const [amount, setAmount] = useState("");
 
     const handleKeyPress = (key: string) => {
         if (key === "del") {
@@ -48,7 +58,7 @@ export const PaymentScreen = ({ onBack, onSubmit, recipient = "ERZASDER" }: Paym
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             {/* Top Bar */}
             <View style={styles.topBar}>
-                <Pressable style={styles.backButton} onPress={onBack}>
+                <Pressable style={styles.backButton} onPress={closePaymentModal}>
                     <Ionicons name="arrow-back" size={28} color="#222" />
                 </Pressable>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} pointerEvents="none">
@@ -92,16 +102,14 @@ export const PaymentScreen = ({ onBack, onSubmit, recipient = "ERZASDER" }: Paym
                 <View style={styles.keyboardRow}>
                     <Pressable
                         style={[styles.continueButton, (!amount || isNaN(Number(amount)) || Number(amount) <= 0) && { backgroundColor: '#ccc' }]}
-                        onPress={() => setShowConfirmSheet(true)}
+                        onPress={handleOpen}
                         disabled={!amount || isNaN(Number(amount)) || Number(amount) <= 0}
                     >
                         <Text style={styles.continueText}>Continue</Text>
                     </Pressable>
                 </View>
             </View>
-            {showConfirmSheet && (
-                <ConfirmPayment visible={showConfirmSheet} onClose={() => setShowConfirmSheet(false)} data={{ amount, to }} />
-            )}
+            <ConfirmPayment data={{ amount, to: recipient }} ref={bottomSheetRef} onClose={handleClose} />
         </SafeAreaView>
     );
 };

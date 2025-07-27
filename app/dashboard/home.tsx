@@ -49,13 +49,13 @@ export default function Home() {
                                 <Text style={styles.optionsText}>Recieve</Text>
                             </View>
                             <View style={{ alignItems: 'center', flex: 1 }}>
-                                <Pressable onPress={() => console.log("To Public Key")} style={styles.options}>
+                                <Pressable onPress={() => router.push("/send")} style={styles.options}>
                                     <Ionicons name="send" size={28} color="#2d2d2d" />
                                 </Pressable>
                                 <Text style={styles.optionsText}>To Public Key</Text>
                             </View>
                             <View style={{ alignItems: 'center', flex: 1 }}>
-                                <Pressable onPress={() => console.log("Portfolio")} style={styles.options}>
+                                <Pressable onPress={() => router.push("/portfolio")} style={styles.options}>
                                     <Ionicons name="wallet" size={28} color="#2d2d2d" />
                                 </Pressable>
                                 <Text style={styles.optionsText}>Portfolio</Text>
