@@ -2,19 +2,17 @@ import { View, Text, Pressable, StyleSheet, SafeAreaView, Modal, Button } from "
 import { useCameraPermissions } from "expo-camera";
 import { Camera, CameraView } from "expo-camera";
 import { Stack, useRouter } from "expo-router";
-import { QrOverview } from "@/components/QrOverview";
+import { QrOverview } from "@/features/scan/components/QrOverview";
 import { useState } from "react";
-import { PaymentScreen } from "@/components/PaymentScreen";
-import { usePaymentModal } from "@/store/PaymentModal";
+import { PaymentScreen } from "@/features/scan/components/PaymentScreen";
+import { usePaymentModal } from "@/features/scan/store/PaymentModal";
+
 
 export default function Custom() {
 
   const { setData, OpenPaymentModal, isOpen, closePaymentModal } = usePaymentModal(); 
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
   const [permission, requestPermission] = useCameraPermissions();
-  const router = useRouter();
 
   if (!permission || !permission.granted) {
     requestPermission();

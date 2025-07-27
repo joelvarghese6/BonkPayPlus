@@ -2,13 +2,16 @@ import { UserScreen } from "@/components/UserScreen";
 import { PrivyUser } from "@privy-io/public-api";
 import { usePrivy, getUserEmbeddedSolanaWallet, useEmbeddedSolanaWallet } from "@privy-io/expo";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { Text, View, StyleSheet, ScrollView, Pressable, Modal } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-
+import RecieveScreen from "@/features/recieve/components/RecieveScreen";
+import { useRecieveModal } from "@/features/recieve/store/RecieveModal";
 
 export default function Home() {
+
+    const { isOpen: isRecieveOpen, OpenRecieveModal, closeRecieveModal } = useRecieveModal();
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -33,32 +36,30 @@ export default function Home() {
                             Payments
                         </Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                            {[
-                                { name: 'qr-code', label: 'Scan QR', route: '/dashboard/custom' },
-                                { name: 'send', label: 'To Public Key', route: '/dashboard/send' },
-                                { name: 'arrow-down', label: 'Recieve', route: '/dashboard/receive' },
-                                { name: 'wallet', label: 'Portfolio', route: '/dashboard/portfolio' }
-                            ].map((item, idx) => (
-                                <View key={item.name} style={{ alignItems: 'center', flex: 1 }}>
-                                    <Pressable onPress={() => router.push(item.route as any)} style={{
-                                        width: 56,
-                                        height: 56,
-                                        borderRadius: 28,
-                                        backgroundColor: '#f2f2f2',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        marginBottom: 6,
-                                        shadowColor: '#000',
-                                        shadowOffset: { width: 0, height: 1 },
-                                        shadowOpacity: 0.08,
-                                        shadowRadius: 2,
-                                        elevation: 1,
-                                    }}>
-                                        <Ionicons name={item.name as any} size={28} color="#2d2d2d" />
-                                    </Pressable>
-                                    <Text style={{ fontSize: 13, color: '#555' }}>{item.label}</Text>
-                                </View>
-                            ))}
+                            <View style={{ alignItems: 'center', flex: 1 }}>
+                                <Pressable onPress={() => router.push('/dashboard/custom')} style={styles.options}>
+                                    <Ionicons name="qr-code" size={28} color="#2d2d2d" />
+                                </Pressable>
+                                <Text style={styles.optionsText}>Scan QR</Text>
+                            </View>
+                            <View style={{ alignItems: 'center', flex: 1 }}>
+                                <Pressable onPress={OpenRecieveModal} style={styles.options}>
+                                    <Ionicons name="arrow-down" size={28} color="#2d2d2d" />
+                                </Pressable>
+                                <Text style={styles.optionsText}>Recieve</Text>
+                            </View>
+                            <View style={{ alignItems: 'center', flex: 1 }}>
+                                <Pressable onPress={() => console.log("To Public Key")} style={styles.options}>
+                                    <Ionicons name="send" size={28} color="#2d2d2d" />
+                                </Pressable>
+                                <Text style={styles.optionsText}>To Public Key</Text>
+                            </View>
+                            <View style={{ alignItems: 'center', flex: 1 }}>
+                                <Pressable onPress={() => console.log("Portfolio")} style={styles.options}>
+                                    <Ionicons name="wallet" size={28} color="#2d2d2d" />
+                                </Pressable>
+                                <Text style={styles.optionsText}>Portfolio</Text>
+                            </View>
                         </View>
                     </View>
 
@@ -92,6 +93,9 @@ export default function Home() {
                     </View>
                 </View>
             </ScrollView>
+            <Modal visible={isRecieveOpen} onRequestClose={closeRecieveModal}>
+                <RecieveScreen />
+            </Modal>
         </SafeAreaView>
     );
 }
@@ -127,6 +131,24 @@ const styles = StyleSheet.create({
         marginLeft: 12,
         marginRight: 12,
         borderRadius: 12,
+    },
+    options: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        backgroundColor: '#f2f2f2',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 6,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 2,
+        elevation: 1,
+    },
+    optionsText: {
+        fontSize: 13,
+        color: '#555',
     }
 });
 

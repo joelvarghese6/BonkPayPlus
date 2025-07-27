@@ -1,7 +1,7 @@
 import { View, Text, Pressable, StyleSheet, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import ConfirmPayment from "./ConfirmPayment";
+import ConfirmPayment from "@/features/scan/components/ConfirmPayment";
 
 type PaymentScreenProps = {
     onBack: () => void;

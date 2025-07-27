@@ -4,7 +4,7 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
-import { usePaymentModal } from '@/store/PaymentModal';
+import { usePaymentModal } from '@/features/scan/store/PaymentModal';
 
 const ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const AMOUNT = '0.1421';
