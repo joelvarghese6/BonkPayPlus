@@ -36,9 +36,7 @@ export default function Custom() {
         </>
       )}
       <Modal visible={isOpen} onRequestClose={closePaymentModal}>
-        <PaymentScreen onBack={() => closePaymentModal()} onSubmit={(amount) => {
-          console.log(amount);
-        }} />
+        <PaymentScreen  />
       </Modal>
     </SafeAreaView>
   );

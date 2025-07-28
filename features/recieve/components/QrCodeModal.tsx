@@ -1,5 +1,5 @@
-import { View, Text, Pressable, StyleSheet, SafeAreaView } from "react-native";
-import { useMemo, useRef, useState } from "react";
+import { View, Pressable, StyleSheet } from "react-native";
+import { useMemo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 

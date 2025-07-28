@@ -26,9 +26,7 @@ export default function RootLayout() {
       clientId={Constants.expoConfig?.extra?.privyClientId}
     >
       <GestureHandlerRootView>
-        <Stack>
-          <Stack.Screen name="dashboard" options={{headerShown: false}} />
-        </Stack>
+        <Stack screenOptions={{ headerShown: false }} />
         <PrivyElements />
       </GestureHandlerRootView>
     </PrivyProvider>

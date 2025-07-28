@@ -17,7 +17,7 @@ const THUMB_SIZE = 64;
 const TRACK_HEIGHT = 64;
 
 type ConfirmPaymentProps = {
-  visible?: boolean;
+  ref: React.RefObject<BottomSheet | null>;
   onClose?: () => void;
   data: {
     amount: string;
@@ -25,11 +25,11 @@ type ConfirmPaymentProps = {
   };
 };
 
-const ConfirmPayment = ({ visible = true, onClose, data }: ConfirmPaymentProps) => {
-
+const ConfirmPayment = ({ ref, onClose, data }: ConfirmPaymentProps) => {
+    
     const { closePaymentModal } = usePaymentModal();
     // ref
-    const bottomSheetRef = useRef<BottomSheet>(null);
+    
     const snapPoints = useMemo(() => ['50%'], []);
     const [swiped, setSwiped] = useState(false);
     const translateX = useRef(new Animated.Value(0)).current;
@@ -60,7 +60,7 @@ const ConfirmPayment = ({ visible = true, onClose, data }: ConfirmPaymentProps) 
                 }).start(() => {
                     Alert.alert('Approved', 'Payment approved!');
                     router.replace('/dashboard/home');
-                    bottomSheetRef.current?.close();
+                    ref.current?.close();
                     closePaymentModal();
                     setTimeout(() => {
                         setSwiped(false);
@@ -85,10 +85,10 @@ const ConfirmPayment = ({ visible = true, onClose, data }: ConfirmPaymentProps) 
 
     return (
         <BottomSheet
-            ref={bottomSheetRef}
+            ref={ref}
             onChange={handleSheetChanges}
             snapPoints={snapPoints}
-            index={1}
+            index={-1}
         >
             <BottomSheetView style={styles.contentContainer}>
                 <Text style={styles.sendText}>Send</Text>
