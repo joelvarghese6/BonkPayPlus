@@ -65,24 +65,24 @@ export default function Home() {
 
                     {/* Row 2: 2 cards */}
                     <View style={{ flexDirection: "row", marginBottom: 16 }}>
-                        <View style={[styles.card, { flex: 1, marginRight: 8 }]}>
+                        <Pressable onPress={() => router.push("/dashboard/second")} style={[styles.card, { flex: 1, marginRight: 8 }]}>
                             <Text style={styles.cardText}>Loans</Text>
-                        </View>
-                        <View style={[styles.card, { flex: 1, marginLeft: 8 }]}>
+                        </Pressable>
+                        <Pressable onPress={() => router.push("/staking")} style={[styles.card, { flex: 1, marginLeft: 8 }]}>
                             <Text style={styles.cardText}>Staking</Text>
-                        </View>
+                        </Pressable>
                     </View>
 
                     {/* Rows 3 & 4: 2x1+1 layout */}
                     <View style={{ flexDirection: "row", flex: 1 }}>
                         {/* Left column: 2 stacked cards */}
                         <View style={{ flex: 1, marginRight: 8, justifyContent: 'space-between' }}>
-                            <View style={[styles.card, { flex: 1, marginBottom: 8 }]}>
+                            <Pressable onPress={() => router.push("/swap")} style={[styles.card, { flex: 1, marginBottom: 8 }]}>
                                 <Text style={styles.cardText}>Swap Tokens</Text>
-                            </View>
-                            <View style={[styles.card, { flex: 1, marginTop: 8 }]}>
+                            </Pressable>
+                            <Pressable onPress={() => router.push("/onramp")} style={[styles.card, { flex: 1, marginTop: 8 }]}>
                                 <Text style={styles.cardText}>Buy SOL</Text>
-                            </View>
+                            </Pressable>
                         </View>
                         {/* Right column: 1 tall card */}
                         <View style={{ flex: 1, marginLeft: 8 }}>

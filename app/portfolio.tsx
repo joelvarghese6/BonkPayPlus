@@ -65,7 +65,7 @@ const TokenItem = ({ item }: { item: typeof tokenData[0] }) => (
 
 export default function Portfolio() {
     const handleBackPress = () => {
-        router.push("/dashboard/home");
+        router.back();
     };
 
     return (

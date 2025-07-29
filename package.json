@@ -9,6 +9,7 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@coinbase/onchainkit": "^0.38.17",
     "@ethersproject/shims": "^5.8.0",
     "@expo-google-fonts/inter": "^0.3.0",
     "@expo/vector-icons": "^14.1.0",
