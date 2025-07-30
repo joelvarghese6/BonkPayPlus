@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import QrCodeModal from "./QrCodeModal";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { generateURL } from "../hooks/generateURL";
+import { getUserEmbeddedSolanaWallet, usePrivy } from "@privy-io/expo";
 
 const KEYS = [
     ["1", "2", "3"],
@@ -21,6 +23,13 @@ function formatFiat(amount: string) {
 
 export default function RecieveScreen() {
 
+    const [amount, setAmount] = useState("0");
+    const [url, setUrl] = useState<URL | undefined>(undefined);
+
+    const { user } = usePrivy();
+    const account = getUserEmbeddedSolanaWallet(user);
+    const { closeRecieveModal } = useRecieveModal(); 
+
     const bottomSheetRef = useRef<BottomSheet>(null);
 
     const handleClose = () => {
@@ -28,11 +37,10 @@ export default function RecieveScreen() {
     };
 
     const handleOpen = () => {
+        const { url } = generateURL(Number(amount), account?.address);  
+        setUrl(url);
         bottomSheetRef.current?.expand();
-    };
-
-    const { closeRecieveModal } = useRecieveModal();    
-    const [amount, setAmount] = useState("0");
+    };   
 
     const handleKeyPress = (key: string) => {
         if (key === "del") {
@@ -105,7 +113,7 @@ export default function RecieveScreen() {
                     </View>
                 </View>
             </View>
-            <QrCodeModal amount={amount} ref={bottomSheetRef} onClose={handleClose} onOpen={handleOpen} />
+            <QrCodeModal ref={bottomSheetRef} onClose={handleClose} url={url} />
         </SafeAreaView>
     );
 }

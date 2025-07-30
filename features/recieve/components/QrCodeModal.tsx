@@ -1,9 +1,22 @@
-import { View, Pressable, StyleSheet } from "react-native";
+import { View, Pressable, StyleSheet, Text } from "react-native";
 import { useMemo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { getUserEmbeddedSolanaWallet, usePrivy } from "@privy-io/expo";
+import QRCode from 'react-native-qrcode-svg';
 
-export default function QrCodeModal({ amount, ref, onClose, onOpen }: { amount: string, ref: React.RefObject<BottomSheet | null>, onClose: () => void, onOpen: () => void }) {
+
+interface QrCodeModalProps {
+    ref: React.RefObject<BottomSheet | null>;
+    onClose: () => void;
+    url?: URL;
+}
+
+export default function QrCodeModal({ ref, onClose, url }: QrCodeModalProps) {
+
+
+    const { user } = usePrivy();
+    const account = getUserEmbeddedSolanaWallet(user);
 
     const handleSheetChanges = (index: number) => {
         console.log("handleSheetChanges", index);
@@ -25,7 +38,11 @@ export default function QrCodeModal({ amount, ref, onClose, onOpen }: { amount: 
                     </Pressable>
                 </View>
                 <View style={styles.qrCodeContainer}>
-                    <Ionicons name="qr-code" size={120} color="#333" />
+                    {url && <QRCode
+                        value={url.toString()}
+                        size={150}
+                    />}
+                    <Text style={styles.addressText}>{account?.address}</Text>
                 </View>
             </BottomSheetView>
         </BottomSheet>
@@ -49,6 +66,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        gap: 10,
     },
     sendText: {
         fontSize: 24,
@@ -62,5 +80,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#f2f2f2",
         alignItems: "center",
         justifyContent: "center",
+    },
+    addressText: {
+        fontSize: 12,
+        color: "#666",
     },
 });

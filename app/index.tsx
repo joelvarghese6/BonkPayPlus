@@ -1,48 +1,29 @@
 import { SafeAreaView, Text, View } from "react-native";
 import Constants from "expo-constants";
 import LoginScreen from "@/components/LoginScreen";
-import { usePrivy } from "@privy-io/expo";
+import { getUserEmbeddedSolanaWallet, useEmbeddedSolanaWallet, usePrivy } from "@privy-io/expo";
 import { UserScreen } from "@/components/UserScreen";
 import { Redirect } from "expo-router";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 export default function Index() {
-  const { user } = usePrivy();
+  const { user, isReady } = usePrivy();
+  const { create } = useEmbeddedSolanaWallet()
 
-  if ((Constants.expoConfig?.extra?.privyAppId as string).length !== 25) {
-    return (
-      <SafeAreaView>
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text>You have not set a valid `privyAppId` in app.json</Text>
-        </View>
-      </SafeAreaView>
-    );
+  if (!isReady) {
+    return <LoadingScreen />;
   }
 
-  if (
-    !(Constants.expoConfig?.extra?.privyClientId as string).startsWith(
-      "client-"
-    )
-  ) {
-    return (
-      <SafeAreaView>
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text>You have not set a valid `privyClientId` in app.json</Text>
-        </View>
-      </SafeAreaView>
-    );
+  if (!user) {
+    return <LoginScreen />;
   }
 
-  return !user ? <LoginScreen /> : <Redirect href="/dashboard/home" />;
+  const account = getUserEmbeddedSolanaWallet(user);
+  console.log(account?.address);
+
+  if (!account?.address) {
+    create?.()
+  }
+
+  return <Redirect href="/dashboard/home" />;
 }
