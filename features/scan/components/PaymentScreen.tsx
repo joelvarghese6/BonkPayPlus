@@ -4,8 +4,11 @@ import { useRef, useState } from "react";
 import ConfirmPayment from "@/features/scan/components/ConfirmPayment";
 import { usePaymentModal } from "../store/PaymentModal";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { SolanaPayUrlData } from "../utils/solanaPayValidation";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 type PaymentScreenProps = {
+    data?: SolanaPayUrlData;
     recipient?: string;
 };
 
@@ -23,7 +26,7 @@ function formatFiat(amount: string) {
     return `$${(num * 1).toFixed(2)}`;
 }
 
-export const PaymentScreen = ({ recipient = "ERZASDER" }: PaymentScreenProps) => {
+export const PaymentScreen = ({ data, recipient }: PaymentScreenProps) => {
 
     const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -36,8 +39,6 @@ export const PaymentScreen = ({ recipient = "ERZASDER" }: PaymentScreenProps) =>
     };
 
     const { closePaymentModal } = usePaymentModal();
-
-    const [amount, setAmount] = useState("");
 
     const handleKeyPress = (key: string) => {
         if (key === "del") {
@@ -54,6 +55,15 @@ export const PaymentScreen = ({ recipient = "ERZASDER" }: PaymentScreenProps) =>
         }
     };
 
+    if (!data) {
+        return <LoadingScreen />
+    }
+    
+    // Use parsed data recipient if available, otherwise fall back to prop
+    const actualRecipient = recipient || data?.recipient;
+
+    const [amount, setAmount] = useState(data?.amount || "0");
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             {/* Top Bar */}
@@ -63,7 +73,7 @@ export const PaymentScreen = ({ recipient = "ERZASDER" }: PaymentScreenProps) =>
                 </Pressable>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} pointerEvents="none">
                     <Text style={styles.recipientLabel} numberOfLines={1} ellipsizeMode="middle">
-                        Send to {recipient}
+                        Send to {actualRecipient}
                     </Text>
                 </View>
             </View>
@@ -109,7 +119,7 @@ export const PaymentScreen = ({ recipient = "ERZASDER" }: PaymentScreenProps) =>
                     </Pressable>
                 </View>
             </View>
-            <ConfirmPayment data={{ amount, to: recipient }} ref={bottomSheetRef} onClose={handleClose} />
+            <ConfirmPayment data={{ amount, to: actualRecipient }} ref={bottomSheetRef} onClose={handleClose} />
         </SafeAreaView>
     );
 };

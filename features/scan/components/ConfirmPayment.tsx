@@ -1,20 +1,13 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Alert, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import { usePaymentModal } from '@/features/scan/store/PaymentModal';
 
 const ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const AMOUNT = '0.1421';
 const FIAT = '$8.05';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SWIPE_WIDTH = SCREEN_WIDTH * 0.7;
-
-const THUMB_SIZE = 64;
-const TRACK_HEIGHT = 64;
 
 type ConfirmPaymentProps = {
   ref: React.RefObject<BottomSheet | null>;
@@ -28,60 +21,25 @@ type ConfirmPaymentProps = {
 const ConfirmPayment = ({ ref, onClose, data }: ConfirmPaymentProps) => {
     
     const { closePaymentModal } = usePaymentModal();
-    // ref
     
     const snapPoints = useMemo(() => ['50%'], []);
-    const [swiped, setSwiped] = useState(false);
-    const translateX = useRef(new Animated.Value(0)).current;
 
     const handleSheetChanges = useCallback((index: number) => {
         // console.log('handleSheetChanges', index);
         if (index === 0 && onClose) onClose();
     }, [onClose]);
 
-    // Thumb movement limited to track width minus thumb size
-    const TRACK_WIDTH = SWIPE_WIDTH;
-    const MAX_TRANSLATE = TRACK_WIDTH - THUMB_SIZE;
-
-    const onGestureEvent = Animated.event(
-        [{ nativeEvent: { translationX: translateX } }],
-        { useNativeDriver: false }
-    );
-
-    const onHandlerStateChange = (event: any) => {
-        if (event.nativeEvent.state === State.END) {
-            let finalX = event.nativeEvent.translationX;
-            if (finalX > MAX_TRANSLATE * 0.85) { 
-                setSwiped(true);
-                Animated.timing(translateX, {
-                    toValue: MAX_TRANSLATE,
-                    duration: 150,
-                    useNativeDriver: false,
-                }).start(() => {
-                    Alert.alert('Approved', 'Payment approved!');
-                    router.replace('/dashboard/home');
-                    ref.current?.close();
-                    closePaymentModal();
-                    setTimeout(() => {
-                        setSwiped(false);
-                        translateX.setValue(0);
-                    }, 1000);
-                });
-            } else {
-                Animated.spring(translateX, {
-                    toValue: 0,
-                    useNativeDriver: false,
-                }).start();
-            }
-        }
+    const handleConfirm = () => {
+        Alert.alert('Approved', 'Payment approved!');
+        router.replace('/dashboard/home');
+        ref.current?.close();
+        closePaymentModal();
     };
 
-    // Clamp thumb position
-    const thumbTranslate = translateX.interpolate({
-        inputRange: [0, MAX_TRANSLATE],
-        outputRange: [0, MAX_TRANSLATE],
-        extrapolate: 'clamp',
-    });
+    const handleCancel = () => {
+        ref.current?.close();
+        closePaymentModal();
+    };
 
     return (
         <BottomSheet
@@ -101,27 +59,13 @@ const ConfirmPayment = ({ ref, onClose, data }: ConfirmPaymentProps) => {
                 <Text style={styles.addressText} numberOfLines={1} ellipsizeMode="middle">
                     {data.to.slice(0, 6)}...{data.to.slice(-4)}
                 </Text>
-                <View style={styles.swipeContainer}>
-                    <View style={styles.swipeTrack}>
-                        <Text style={styles.swipeTextTrack}>Swipe to Approve</Text>
-                        <PanGestureHandler
-                            onGestureEvent={onGestureEvent}
-                            onHandlerStateChange={onHandlerStateChange}
-                            enabled={!swiped}
-                        >
-                            <Animated.View
-                                style={[
-                                    styles.swipeThumb,
-                                    {
-                                        transform: [{ translateX: thumbTranslate }],
-                                        opacity: swiped ? 0.5 : 1,
-                                    },
-                                ]}
-                            >
-                                <Ionicons name="arrow-forward" size={28} color="#fff" />
-                            </Animated.View>
-                        </PanGestureHandler>
-                    </View>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+                        <Text style={styles.cancelButtonText}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
+                        <Text style={styles.confirmButtonText}>Confirm</Text>
+                    </TouchableOpacity>
                 </View>
             </BottomSheetView>
         </BottomSheet>
@@ -173,48 +117,38 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         marginBottom: 28,
     },
-    swipeContainer: {
-        width: SWIPE_WIDTH,
-        alignItems: 'center',
+    buttonContainer: {
+        flexDirection: 'row',
+        gap: 16,
         marginTop: 12,
     },
-    swipeTrack: {
-        width: SWIPE_WIDTH,
-        height: TRACK_HEIGHT,
-        backgroundColor: '#222',
-        borderRadius: TRACK_HEIGHT / 2,
-        justifyContent: 'center',
+    cancelButton: {
+        flex: 1,
+        height: 56,
+        backgroundColor: '#f5f5f5',
+        borderRadius: 28,
         alignItems: 'center',
-        position: 'relative',
-        overflow: 'hidden',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
     },
-    swipeTextTrack: {
-        color: '#fff',
-        fontSize: 18,
+    cancelButtonText: {
+        fontSize: 16,
         fontWeight: '600',
-        letterSpacing: 0.5,
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        textAlign: 'center',
-        zIndex: 1,
+        color: '#666',
     },
-    swipeThumb: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: THUMB_SIZE,
-        height: THUMB_SIZE,
-        borderRadius: THUMB_SIZE / 2,
-        backgroundColor: '#444',
+    confirmButton: {
+        flex: 1,
+        height: 56,
+        backgroundColor: '#222',
+        borderRadius: 28,
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.12,
-        shadowRadius: 4,
-        elevation: 3,
+    },
+    confirmButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#fff',
     },
 });
 

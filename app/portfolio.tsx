@@ -2,6 +2,11 @@ import React from "react";
 import { View, Text, SafeAreaView, StyleSheet, Pressable, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useEmbeddedSolanaWallet } from '@privy-io/expo';
+import { Connection, PublicKey } from "@solana/web3.js";
+import { useGetWalletBalance } from "@/features/solana/hooks/useGetBalance";
+import { useSolPrice } from "@/features/solana/hooks/useSolPrice";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 // Dummy data for tokens
 const tokenData = [
@@ -64,6 +69,29 @@ const TokenItem = ({ item }: { item: typeof tokenData[0] }) => (
 );
 
 export default function Portfolio() {
+
+    const { solBalance, loading, error } = useGetWalletBalance();
+    const { solPrice, loading: solPriceLoading } = useSolPrice();
+
+    if (loading || solPriceLoading) {
+        return (
+            <LoadingScreen />
+        )
+    }
+
+    if (error) {
+        return (
+            <View style={styles.container}>
+                <Text>Error: {error.message}</Text>
+            </View>
+        )
+    }
+
+    console.log(solBalance);
+    console.log(solPrice);
+
+    const solBalanceInDollars = (solBalance && solPrice) ? solBalance * solPrice : 0;
+
     const handleBackPress = () => {
         router.back();
     };
@@ -81,13 +109,23 @@ export default function Portfolio() {
 
             {/* Content */}
             <View style={styles.content}>
-                <FlatList
-                    data={tokenData}
-                    renderItem={({ item }) => <TokenItem item={item} />}
-                    keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={false}
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
-                />
+                <View style={styles.tokenItem}>
+                    <View style={styles.tokenLeft}> 
+                        <View style={styles.tokenIcon}>
+                            <Ionicons name={"logo-bitcoin"} size={24} color="#ff00c3" />
+                        </View>
+                        <View style={styles.tokenInfo}>
+                            <Text style={styles.tokenName}>{"SOL"}</Text>
+                            <Text style={styles.tokenPrice}>{"$" + solPrice?.toFixed(2)}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.tokenRight}>
+                        <Text style={styles.tokenBalance}>{solBalance}</Text>
+                        <Text style={styles.dollarValue}>
+                            {"$" + solBalanceInDollars.toFixed(2)}
+                        </Text>
+                    </View>
+                </View>
             </View>
         </SafeAreaView>
     );
