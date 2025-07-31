@@ -20,13 +20,6 @@ export default function LoginScreen() {
 
   const { login } = useLogin();
 
-  const oauth = useLoginWithOAuth({
-    onError: (err) => {
-      console.log(err);
-      setError(JSON.stringify(err.message));
-    },
-  });
-
   const buttonBg = useThemeColor({}, "tint");
   const buttonText = useThemeColor({}, "background");
 
