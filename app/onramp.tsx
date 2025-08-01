@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Pressable } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Pressable, Alert } from "react-native";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
@@ -12,8 +12,22 @@ export default function Onramp() {
         router.back();
     };
 
-    const handleBuySol = () => {
-        Linking.openURL("https://example.com");
+    const handleBuySol = async () => {
+        try {
+            // Use a direct Coinbase onramp URL that works in React Native
+            const projectId = '829c3cbc-12a2-42be-877f-b743931b08a5';
+            const onrampUrl = `https://pay.coinbase.com/buy/select-asset?appId=${projectId}&destinationWallets[SOLANA]=&presetFiatAmount=${amount || 20}&presetFiatCurrency=USD&presetCryptoAmount=&presetCryptoCurrency=SOL`;
+            
+            const canOpen = await Linking.canOpenURL(onrampUrl);
+            if (canOpen) {
+                await Linking.openURL(onrampUrl);
+            } else {
+                Alert.alert("Error", "Cannot open Coinbase onramp URL");
+            }
+        } catch (error) {
+            console.error('Error opening onramp URL:', error);
+            Alert.alert("Error", "Failed to open onramp service");
+        }
     };
 
     const isButtonDisabled = !amount || parseFloat(amount) <= 0.01;
