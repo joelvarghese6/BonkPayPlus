@@ -28,6 +28,10 @@ function formatFiat(amount: string) {
 
 export const PaymentScreen = ({ data, recipient }: PaymentScreenProps) => {
 
+    const dataAmount = data ? data?.amount : "0";
+
+    const [amount, setAmount] = useState(data?.amount || "0");
+
     const bottomSheetRef = useRef<BottomSheet>(null);
 
     const handleOpen = () => {
@@ -55,14 +59,12 @@ export const PaymentScreen = ({ data, recipient }: PaymentScreenProps) => {
         }
     };
 
-    if (!data) {
+    if (!data && !recipient) {
         return <LoadingScreen />
     }
     
     // Use parsed data recipient if available, otherwise fall back to prop
-    const actualRecipient = recipient || data?.recipient;
-
-    const [amount, setAmount] = useState(data?.amount || "0");
+    const actualRecipient = recipient || data?.recipient || "";
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>

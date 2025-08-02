@@ -1,6 +1,9 @@
 import { View, Text, TextInput, StyleSheet, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
+import { Connection, PublicKey, ParsedTransactionWithMeta } from '@solana/web3.js';
+import { useEffect, useState } from "react";
+import { useEmbeddedSolanaWallet } from "@privy-io/expo";
 
 const data = [
   {
@@ -47,7 +50,56 @@ const data = [
   },
 ]
 
+const connection = new Connection('https://devnet.helius-rpc.com/?api-key=0f31c860-68c3-4d89-bc63-a2f8957a0603');
+
+const fetchTransactions = async (publicKey: PublicKey) => {
+  const signatures = await connection.getSignaturesForAddress(publicKey, {
+    limit: 20, // adjust as needed
+  });
+
+  const txs: (ParsedTransactionWithMeta | null)[] = await Promise.all(
+    signatures.map(sig => connection.getParsedTransaction(sig.signature, 'confirmed'))
+  );
+
+  const solTransfers = txs
+    .filter(tx => !!tx)
+    .flatMap(tx => {
+      return tx.transaction.message.instructions
+        .filter(
+          (instr: any) =>
+            instr.programId?.toBase58() === '11111111111111111111111111111111' &&
+            instr.parsed?.type === 'transfer' &&
+            (instr.parsed.info.source === publicKey.toBase58() ||
+              instr.parsed.info.destination === publicKey.toBase58())
+        )
+        .map((instr: any) => ({
+          type: instr.parsed.info.source === publicKey.toBase58() ? 'Sent' : 'Received',
+          from: instr.parsed.info.source,
+          to: instr.parsed.info.destination,
+          amount: instr.parsed.info.lamports / 1_000_000_000, // in SOL
+          signature: tx.transaction.signatures[0],
+          slot: tx.slot,
+          timestamp: tx.blockTime ? new Date(tx.blockTime * 1000).toLocaleString() : 'Unknown',
+        }));
+    });
+
+  return solTransfers;
+}
+
 export default function Third() {
+  const [transactions, setTransactions] = useState<any>();
+
+  const { wallets } = useEmbeddedSolanaWallet();
+  const wallet = wallets?.[0];
+
+  useEffect(() => {
+    if (wallet) {
+      fetchTransactions(new PublicKey(wallet.address)).then(setTransactions);
+    }
+  }, [wallet]);
+
+  console.log(transactions);
+  
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', padding: 20 }}>
       {/* Header */}
@@ -68,7 +120,7 @@ export default function Third() {
         renderItem={({ item }) => (
           <View style={styles.listItem}>
             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-              <View style={[styles.iconCircle, { backgroundColor: item.type === 'receive' ? '#e0f7e9' : '#ffeaea' }]}> 
+              <View style={[styles.iconCircle, { backgroundColor: item.type === 'receive' ? '#e0f7e9' : '#ffeaea' }]}>
                 <Ionicons
                   name={item.type === 'receive' ? 'arrow-down' : 'arrow-up'}
                   size={20}
@@ -82,7 +134,7 @@ export default function Third() {
                 <Text style={{ color: '#888', fontSize: 13 }}>{item.address.slice(0, 6)}...{item.address.slice(-4)}</Text>
                 <Text style={{ color: '#888', fontSize: 13 }}>{item.date}</Text>
               </View>
-            </View> 
+            </View>
             <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#222' }}>
               {item.type === 'receive' ? '+' : '-'}${item.amount}
             </Text>

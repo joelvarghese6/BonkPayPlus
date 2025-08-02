@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { SolanaPayUrlData } from '../utils/solanaPayValidation';
 
 interface PaymentModalStore {
     isOpen: boolean;

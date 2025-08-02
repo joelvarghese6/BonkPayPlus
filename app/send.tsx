@@ -8,8 +8,9 @@ import { usePaymentModal } from "@/features/scan/store/PaymentModal";
 
 export default function SendToAddress() {
 
-    const { isOpen, closePaymentModal, OpenPaymentModal } = usePaymentModal();
     const [publicKeyInput, setPublicKeyInput] = useState("");
+
+    const { isOpen, closePaymentModal, OpenPaymentModal } = usePaymentModal();
 
     // Validate Solana public key
     const isValidPublicKey = useMemo(() => {
@@ -33,6 +34,8 @@ export default function SendToAddress() {
             OpenPaymentModal();
         }
     };
+
+    console.log("modal open", isOpen);
 
     return (
         <SafeAreaView style={styles.container}>

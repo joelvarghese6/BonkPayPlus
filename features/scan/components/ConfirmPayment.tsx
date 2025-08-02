@@ -4,24 +4,32 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { usePaymentModal } from '@/features/scan/store/PaymentModal';
+import { Connection, PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
+import { useEmbeddedSolanaWallet } from '@privy-io/expo';
+import { useSendTokens } from '@/features/solana/hooks/useSendTokens';
+
 
 const ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const AMOUNT = '0.1421';
 const FIAT = '$8.05';
 
 type ConfirmPaymentProps = {
-  ref: React.RefObject<BottomSheet | null>;
-  onClose?: () => void;
-  data: {
-    amount: string;
-    to: string;
-  };
+    ref: React.RefObject<BottomSheet | null>;
+    onClose?: () => void;
+    data: {
+        amount: string;
+        to: string;
+    };
 };
 
+
+
 const ConfirmPayment = ({ ref, onClose, data }: ConfirmPaymentProps) => {
-    
+
+    const { sendSol, isLoading, error } = useSendTokens();
+
     const { closePaymentModal } = usePaymentModal();
-    
+
     const snapPoints = useMemo(() => ['50%'], []);
 
     const handleSheetChanges = useCallback((index: number) => {
@@ -29,11 +37,17 @@ const ConfirmPayment = ({ ref, onClose, data }: ConfirmPaymentProps) => {
         if (index === 0 && onClose) onClose();
     }, [onClose]);
 
-    const handleConfirm = () => {
-        Alert.alert('Approved', 'Payment approved!');
+    const handleConfirm = async () => {
+        const signature = await sendSol(data.amount, data.to);
+        console.log('signature', signature);
+        if (error) {
+            Alert.alert('Error', error);
+            return;
+        }
         router.replace('/dashboard/home');
         ref.current?.close();
         closePaymentModal();
+        Alert.alert('Approved', 'Payment approved!');
     };
 
     const handleCancel = () => {
