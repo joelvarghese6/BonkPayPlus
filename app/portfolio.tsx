@@ -6,7 +6,8 @@ import { useEmbeddedSolanaWallet } from '@privy-io/expo';
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useGetWalletBalance } from "@/features/solana/hooks/useGetBalance";
 import { useSolPrice } from "@/features/solana/hooks/useSolPrice";
-import { LoadingScreen } from "@/components/LoadingScreen";
+import { RotatingScreen } from "@/components/rotatingScreen";
+import { Image } from "expo-image";
 
 // Dummy data for tokens
 const tokenData = [
@@ -52,7 +53,7 @@ const TokenItem = ({ item }: { item: typeof tokenData[0] }) => (
     <View style={styles.tokenItem}>
         <View style={styles.tokenLeft}>
             <View style={styles.tokenIcon}>
-                <Ionicons name={item.icon as any} size={24} color="#ff00c3" />
+                <Ionicons name={item.icon as any} size={24} color="#007AFF" />
             </View>
             <View style={styles.tokenInfo}>
                 <Text style={styles.tokenName}>{item.name}</Text>
@@ -75,7 +76,7 @@ export default function Portfolio() {
 
     if (loading || solPriceLoading) {
         return (
-            <LoadingScreen />
+            <RotatingScreen />
         )
     }
 
@@ -112,7 +113,7 @@ export default function Portfolio() {
                 <View style={styles.tokenItem}>
                     <View style={styles.tokenLeft}> 
                         <View style={styles.tokenIcon}>
-                            <Ionicons name={"logo-bitcoin"} size={24} color="#ff00c3" />
+                            <Image source={require("@/assets/images/solana.png")} style={styles.tokenIconImage} />
                         </View>
                         <View style={styles.tokenInfo}>
                             <Text style={styles.tokenName}>{"SOL"}</Text>
@@ -222,5 +223,9 @@ const styles = StyleSheet.create({
     },
     separator: {
         height: 8,
+    },
+    tokenIconImage: {
+        width: 24,
+        height: 24,
     },
 });

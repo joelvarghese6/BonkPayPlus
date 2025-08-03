@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -7,6 +7,10 @@ import { usePaymentModal } from '@/features/scan/store/PaymentModal';
 import { Connection, PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
 import { useEmbeddedSolanaWallet } from '@privy-io/expo';
 import { useSendTokens } from '@/features/solana/hooks/useSendTokens';
+import { useBonkRewardModal } from '@/features/rewards/store/BonkRewardModal';
+import { calculateTwoPercentBonkForOneSol, formatBonkAmount } from '@/utils/bonkCalculations';
+import { useBonkPrice } from '@/features/solana/hooks/useBonkPrice';
+import { useSolPrice } from '@/features/solana/hooks/useSolPrice';
 
 
 const ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
@@ -27,8 +31,19 @@ type ConfirmPaymentProps = {
 const ConfirmPayment = ({ ref, onClose, data }: ConfirmPaymentProps) => {
 
     const { sendSol, isLoading, error } = useSendTokens();
-
+    const { OpenBonkRewardModal } = useBonkRewardModal();
     const { closePaymentModal } = usePaymentModal();
+
+    const { solPrice, loading } = useSolPrice();
+    const { bonkPrice, loading: bonkLoading } = useBonkPrice();
+    
+    // Calculate 2% BONK reward based on current prices
+    const twoPercentBonk = React.useMemo(() => {
+        if (solPrice && bonkPrice) {
+            return calculateTwoPercentBonkForOneSol(solPrice, bonkPrice);
+        }
+        return 0;
+    }, [solPrice, bonkPrice]);
 
     const snapPoints = useMemo(() => ['50%'], []);
 
@@ -47,13 +62,21 @@ const ConfirmPayment = ({ ref, onClose, data }: ConfirmPaymentProps) => {
         router.replace('/dashboard/home');
         ref.current?.close();
         closePaymentModal();
-        Alert.alert('Approved', 'Payment approved!');
+        OpenBonkRewardModal(data.amount, formatBonkAmount(twoPercentBonk));
     };
 
     const handleCancel = () => {
         ref.current?.close();
         closePaymentModal();
     };
+
+    if (isLoading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#007AFF" />
+            </View>
+        );
+    }
 
     return (
         <BottomSheet
@@ -87,6 +110,17 @@ const ConfirmPayment = ({ ref, onClose, data }: ConfirmPaymentProps) => {
 };
 
 const styles = StyleSheet.create({
+    loadingContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000,
+    },
     contentContainer: {
         flex: 1,
         alignItems: 'center',

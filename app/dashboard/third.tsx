@@ -4,6 +4,9 @@ import { FlashList } from "@shopify/flash-list";
 import { Connection, PublicKey, ParsedTransactionWithMeta } from '@solana/web3.js';
 import { useEffect, useState } from "react";
 import { useEmbeddedSolanaWallet } from "@privy-io/expo";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import { useSolTransfers } from "@/features/solana/hooks/useSolTransfers";
+import { RotatingScreen } from "@/components/rotatingScreen";
 
 const data = [
   {
@@ -50,56 +53,13 @@ const data = [
   },
 ]
 
-const connection = new Connection('https://devnet.helius-rpc.com/?api-key=0f31c860-68c3-4d89-bc63-a2f8957a0603');
-
-const fetchTransactions = async (publicKey: PublicKey) => {
-  const signatures = await connection.getSignaturesForAddress(publicKey, {
-    limit: 20, // adjust as needed
-  });
-
-  const txs: (ParsedTransactionWithMeta | null)[] = await Promise.all(
-    signatures.map(sig => connection.getParsedTransaction(sig.signature, 'confirmed'))
-  );
-
-  const solTransfers = txs
-    .filter(tx => !!tx)
-    .flatMap(tx => {
-      return tx.transaction.message.instructions
-        .filter(
-          (instr: any) =>
-            instr.programId?.toBase58() === '11111111111111111111111111111111' &&
-            instr.parsed?.type === 'transfer' &&
-            (instr.parsed.info.source === publicKey.toBase58() ||
-              instr.parsed.info.destination === publicKey.toBase58())
-        )
-        .map((instr: any) => ({
-          type: instr.parsed.info.source === publicKey.toBase58() ? 'Sent' : 'Received',
-          from: instr.parsed.info.source,
-          to: instr.parsed.info.destination,
-          amount: instr.parsed.info.lamports / 1_000_000_000, // in SOL
-          signature: tx.transaction.signatures[0],
-          slot: tx.slot,
-          timestamp: tx.blockTime ? new Date(tx.blockTime * 1000).toLocaleString() : 'Unknown',
-        }));
-    });
-
-  return solTransfers;
-}
 
 export default function Third() {
-  const [transactions, setTransactions] = useState<any>();
-
-  const { wallets } = useEmbeddedSolanaWallet();
-  const wallet = wallets?.[0];
-
-  useEffect(() => {
-    if (wallet) {
-      fetchTransactions(new PublicKey(wallet.address)).then(setTransactions);
-    }
-  }, [wallet]);
-
-  console.log(transactions);
   
+  const { transfers, loading, error } = useSolTransfers();
+
+  if (loading) return <RotatingScreen />;
+
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', padding: 20 }}>
       {/* Header */}
@@ -115,28 +75,28 @@ export default function Third() {
       </View>
       {/* List */}
       <FlashList
-        data={data}
-        keyExtractor={item => item.id.toString()}
+        data={transfers}
+        keyExtractor={item => item.signature}
         renderItem={({ item }) => (
           <View style={styles.listItem}>
             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-              <View style={[styles.iconCircle, { backgroundColor: item.type === 'receive' ? '#e0f7e9' : '#ffeaea' }]}>
+              <View style={[styles.iconCircle, { backgroundColor: item.type === 'Received' ? '#e0f7e9' : '#ffeaea' }]}>
                 <Ionicons
-                  name={item.type === 'receive' ? 'arrow-down' : 'arrow-up'}
+                  name={item.type === 'Received' ? 'arrow-down' : 'arrow-up'}
                   size={20}
-                  color={item.type === 'receive' ? '#2ecc71' : '#e74c3c'}
+                  color={item.type === 'Received' ? '#2ecc71' : '#e74c3c'}
                 />
               </View>
               <View style={{ marginLeft: 12 }}>
                 <Text style={{ fontWeight: 'bold', color: '#222', fontSize: 15 }}>
-                  {item.type === 'receive' ? 'Received from' : 'Paid to'}
+                  {item.type === 'Received' ? 'Received from' : 'Paid to'}
                 </Text>
-                <Text style={{ color: '#888', fontSize: 13 }}>{item.address.slice(0, 6)}...{item.address.slice(-4)}</Text>
-                <Text style={{ color: '#888', fontSize: 13 }}>{item.date}</Text>
+                <Text style={{ color: '#888', fontSize: 13 }}>{item.type === 'Received' ? (item.from.slice(0, 6) + '...' + item.from.slice(-4)) : (item.to.slice(0, 6) + '...' + item.to.slice(-4))}</Text>
+                <Text style={{ color: '#888', fontSize: 13 }}>{item.timestamp}</Text>
               </View>
             </View>
             <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#222' }}>
-              {item.type === 'receive' ? '+' : '-'}${item.amount}
+              {item.type === 'Received' ? '+' : '-'}${item.amount}
             </Text>
           </View>
         )}

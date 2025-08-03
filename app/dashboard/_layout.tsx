@@ -4,12 +4,21 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function DashboardLayout() {
     return (
-        <Tabs screenOptions={{ tabBarActiveTintColor: "#ff00c3", tabBarInactiveTintColor: "#727272" }}>
-            <Tabs.Screen name="home" options={{ tabBarLabel: "Home", tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} /> }} />
-            <Tabs.Screen name="second" options={{ tabBarLabel: "Grow", tabBarIcon: ({ color, size }) => <Ionicons name="leaf" size={size} color={color} /> }} />
+        <Tabs screenOptions={{ tabBarActiveTintColor: "#007AFF", tabBarInactiveTintColor: "#1A1A1A" }}>
+            <Tabs.Screen name="home" options={{ 
+                headerShown: false,
+                tabBarLabel: "Home", 
+                tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} /> 
+            }} />
+            <Tabs.Screen name="second" options={{ 
+                title: "Grow & Earn",
+                tabBarLabel: "Grow", 
+                tabBarIcon: ({ color, size }) => <Ionicons name="leaf" size={size} color={color} /> 
+            }} />
             <Tabs.Screen
                 name="custom"
                 options={{
+                    title: "Scan QR",
                     tabBarButton: SpecialTabButton,
                     tabBarStyle: {
                         display: "none"
@@ -22,8 +31,16 @@ export default function DashboardLayout() {
                     }
                 }}
             />
-            <Tabs.Screen name="third" options={{ tabBarLabel: "History", tabBarIcon: ({ color, size }) => <Ionicons name="time" size={size} color={color} /> }} />
-            <Tabs.Screen name="fourth" options={{ tabBarLabel: "Profile", tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} /> }} />
+            <Tabs.Screen name="third" options={{ 
+                title: "Transaction History",
+                tabBarLabel: "History", 
+                tabBarIcon: ({ color, size }) => <Ionicons name="time" size={size} color={color} /> 
+            }} />
+            <Tabs.Screen name="fourth" options={{ 
+                title: "My Profile",
+                tabBarLabel: "Profile", 
+                tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} /> 
+            }} />
         </Tabs>
     );
 }

@@ -8,147 +8,265 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import RecieveScreen from "@/features/recieve/components/RecieveScreen";
 import { useRecieveModal } from "@/features/recieve/store/RecieveModal";
+import { BonkRecieved } from "@/components/BonkRecieved";
+import { useBonkRewardModal } from "@/features/rewards/store/BonkRewardModal";
 
 export default function Home() {
 
     const { isOpen: isRecieveOpen, OpenRecieveModal, closeRecieveModal } = useRecieveModal();
+    const { isOpen: isBonkRewardOpen, closeBonkRewardModal } = useBonkRewardModal();
+    // Design constants matching login screen
+    const primaryColor = "#007AFF";
+    const textColor = "#1A1A1A";
+    const backgroundColor = "#FFFFFF";
+    const cardBackground = "#F8F9FA";
+    const iconBackground = "#F0F8FF";
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-                <View style={styles.banner}>
-                    <View style={{ flex: 1, padding: 8 }}>
-                        <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#2d2d2d', marginBottom: 6 }}>
-                            BONKPAY+
-                        </Text>
-                        <Text style={{ fontSize: 15, color: '#555', lineHeight: 22 }}>
-                            welcome to bonk pay your all in all payment solution with rewards
-                        </Text>
+        <SafeAreaView style={[styles.container, { backgroundColor }]}>
+            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                {/* Header Section */}
+                <View style={styles.header}>
+                    <View style={styles.iconContainer}>
+                        <Ionicons name="wallet" size={60} color={primaryColor} />
                     </View>
-                    <Image
-                        source={require("@/assets/images/icon.png")}
-                        style={{ width: 64, height: 64 }}
-                    />
+                    <Text style={[styles.title, { color: textColor }]}>BONKPAY+</Text>
+                    <Text style={[styles.subtitle, { color: textColor }]}>
+                        Your all-in-one payment solution with rewards
+                    </Text>
                 </View>
-                <View style={{ flex: 1, padding: 16 }}>
-                    <View style={{ marginBottom: 16 }}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 12, color: '#2d2d2d' }}>
-                            Payments
-                        </Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                            <View style={{ alignItems: 'center', flex: 1 }}>
-                                <Pressable onPress={() => router.push('/dashboard/custom')} style={styles.options}>
-                                    <Ionicons name="qr-code" size={28} color="#2d2d2d" />
+
+                {/* Main Content */}
+                <View style={styles.mainContent}>
+                    {/* Quick Actions */}
+                    <View style={styles.section}>
+                        <Text style={[styles.sectionTitle, { color: textColor }]}>Quick Actions</Text>
+                        <View style={styles.quickActions}>
+                            <View style={styles.actionItem}>
+                                <Pressable 
+                                    onPress={() => router.push('/dashboard/custom')} 
+                                    style={({ pressed }) => [
+                                        styles.actionButton,
+                                        { backgroundColor: iconBackground, opacity: pressed ? 0.8 : 1 }
+                                    ]}
+                                >
+                                    <Ionicons name="qr-code" size={28} color={primaryColor} />
                                 </Pressable>
-                                <Text style={styles.optionsText}>Scan QR</Text>
+                                <Text style={[styles.actionText, { color: textColor }]}>Scan QR</Text>
                             </View>
-                            <View style={{ alignItems: 'center', flex: 1 }}>
-                                <Pressable onPress={OpenRecieveModal} style={styles.options}>
-                                    <Ionicons name="arrow-down" size={28} color="#2d2d2d" />
+                            <View style={styles.actionItem}>
+                                <Pressable 
+                                    onPress={OpenRecieveModal} 
+                                    style={({ pressed }) => [
+                                        styles.actionButton,
+                                        { backgroundColor: iconBackground, opacity: pressed ? 0.8 : 1 }
+                                    ]}
+                                >
+                                    <Ionicons name="arrow-down" size={28} color={primaryColor} />
                                 </Pressable>
-                                <Text style={styles.optionsText}>Recieve</Text>
+                                <Text style={[styles.actionText, { color: textColor }]}>Receive</Text>
                             </View>
-                            <View style={{ alignItems: 'center', flex: 1 }}>
-                                <Pressable onPress={() => router.push("/send")} style={styles.options}>
-                                    <Ionicons name="send" size={28} color="#2d2d2d" />
+                            <View style={styles.actionItem}>
+                                <Pressable 
+                                    onPress={() => router.push("/send")} 
+                                    style={({ pressed }) => [
+                                        styles.actionButton,
+                                        { backgroundColor: iconBackground, opacity: pressed ? 0.8 : 1 }
+                                    ]}
+                                >
+                                    <Ionicons name="send" size={28} color={primaryColor} />
                                 </Pressable>
-                                <Text style={styles.optionsText}>To Public Key</Text>
+                                <Text style={[styles.actionText, { color: textColor }]}>Send</Text>
                             </View>
-                            <View style={{ alignItems: 'center', flex: 1 }}>
-                                <Pressable onPress={() => router.push("/portfolio")} style={styles.options}>
-                                    <Ionicons name="wallet" size={28} color="#2d2d2d" />
+                            <View style={styles.actionItem}>
+                                <Pressable 
+                                    onPress={() => router.push("/portfolio")} 
+                                    style={({ pressed }) => [
+                                        styles.actionButton,
+                                        { backgroundColor: iconBackground, opacity: pressed ? 0.8 : 1 }
+                                    ]}
+                                >
+                                    <Ionicons name="wallet" size={28} color={primaryColor} />
                                 </Pressable>
-                                <Text style={styles.optionsText}>Portfolio</Text>
+                                <Text style={[styles.actionText, { color: textColor }]}>Portfolio</Text>
                             </View>
                         </View>
                     </View>
 
-                    {/* Row 2: 2 cards */}
-                    <View style={{ flexDirection: "row", marginBottom: 16 }}>
-                        <Pressable onPress={() => router.push("/dashboard/second")} style={[styles.card, { flex: 1, marginRight: 8 }]}>
-                            <Text style={styles.cardText}>Loans</Text>
-                        </Pressable>
-                        <Pressable onPress={() => router.push("/staking")} style={[styles.card, { flex: 1, marginLeft: 8 }]}>
-                            <Text style={styles.cardText}>Staking</Text>
-                        </Pressable>
-                    </View>
-
-                    {/* Rows 3 & 4: 2x1+1 layout */}
-                    <View style={{ flexDirection: "row", flex: 1 }}>
-                        {/* Left column: 2 stacked cards */}
-                        <View style={{ flex: 1, marginRight: 8, justifyContent: 'space-between' }}>
-                            <Pressable onPress={() => router.push("/swap")} style={[styles.card, { flex: 1, marginBottom: 8 }]}>
-                                <Text style={styles.cardText}>Swap Tokens</Text>
-                            </Pressable>
-                            <Pressable onPress={() => router.push("/onramp")} style={[styles.card, { flex: 1, marginTop: 8 }]}>
-                                <Text style={styles.cardText}>Buy SOL</Text>
-                            </Pressable>
-                        </View>
-                        {/* Right column: 1 tall card */}
-                        <View style={{ flex: 1, marginLeft: 8 }}>
-                            <View style={[styles.card, { flex: 2, height: '100%', justifyContent: 'center' }]}>
-                                <Text style={styles.cardText}>Lock BONK</Text>
+                    {/* Services Grid */}
+                    <View style={styles.section}>
+                        <Text style={[styles.sectionTitle, { color: textColor }]}>Services</Text>
+                        <View style={styles.servicesGrid}>
+                            {/* Row 1 */}
+                            <View style={styles.serviceRow}>
+                                <Pressable 
+                                    onPress={() => router.push("/dashboard/second")} 
+                                    style={({ pressed }) => [
+                                        styles.serviceCard,
+                                        { opacity: pressed ? 0.8 : 1 }
+                                    ]}
+                                >
+                                    <Ionicons name="cash" size={24} color={primaryColor} />
+                                    <Text style={[styles.serviceText, { color: textColor }]}>Loans</Text>
+                                </Pressable>
+                                <Pressable 
+                                    onPress={() => router.push("/staking")} 
+                                    style={({ pressed }) => [
+                                        styles.serviceCard,
+                                        { opacity: pressed ? 0.8 : 1 }
+                                    ]}
+                                >
+                                    <Ionicons name="trending-up" size={24} color={primaryColor} />
+                                    <Text style={[styles.serviceText, { color: textColor }]}>Staking</Text>
+                                </Pressable>
                             </View>
+
+                            {/* Row 2 */}
+                            <View style={styles.serviceRow}>
+                                <Pressable 
+                                    onPress={() => router.push("/swap")} 
+                                    style={({ pressed }) => [
+                                        styles.serviceCard,
+                                        { opacity: pressed ? 0.8 : 1 }
+                                    ]}
+                                >
+                                    <Ionicons name="swap-horizontal" size={24} color={primaryColor} />
+                                    <Text style={[styles.serviceText, { color: textColor }]}>Swap</Text>
+                                </Pressable>
+                                <Pressable 
+                                    onPress={() => router.push("/onramp")} 
+                                    style={({ pressed }) => [
+                                        styles.serviceCard,
+                                        { opacity: pressed ? 0.8 : 1 }
+                                    ]}
+                                >
+                                    <Ionicons name="card" size={24} color={primaryColor} />
+                                    <Text style={[styles.serviceText, { color: textColor }]}>Buy SOL</Text>
+                                </Pressable>
+                            </View>
+
+
                         </View>
                     </View>
                 </View>
             </ScrollView>
+            
             <Modal visible={isRecieveOpen} onRequestClose={closeRecieveModal}>
                 <RecieveScreen />
+            </Modal>
+            <Modal visible={isBonkRewardOpen} onRequestClose={closeBonkRewardModal}>
+                <BonkRecieved />
             </Modal>
         </SafeAreaView>
     );
 }
 
-
 const styles = StyleSheet.create({
-    card: {
-        backgroundColor: '#f2f2f2',
-        borderRadius: 12,
+    container: {
+        flex: 1,
+    },
+    scrollContent: {
+        flexGrow: 1,
+        paddingBottom: 20,
+    },
+    header: {
+        alignItems: 'center',
+        paddingVertical: 40,
+        paddingHorizontal: 20,
+    },
+    iconContainer: {
+        marginBottom: 24,
+        padding: 20,
+        borderRadius: 50,
+        backgroundColor: "#F0F8FF",
+    },
+    title: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        marginBottom: 8,
+        letterSpacing: 1,
+    },
+    subtitle: {
+        fontSize: 16,
+        opacity: 0.7,
+        textAlign: 'center',
+        lineHeight: 22,
+    },
+    mainContent: {
+        flex: 1,
+        paddingHorizontal: 20,
+    },
+    section: {
+        marginBottom: 32,
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 16,
+    },
+    quickActions: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    actionItem: {
+        alignItems: 'center',
+        flex: 1,
+    },
+    actionButton: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: 80,
-        padding: 16,
+        marginBottom: 8,
+        elevation: 2,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 2,
-        borderWidth: 1,
-        borderColor: '#000',
     },
-    cardText: {
-        fontSize: 18,
-        fontWeight: 'bold',
+    actionText: {
+        fontSize: 13,
+        fontWeight: '500',
     },
-    banner: {
+    servicesGrid: {
+        gap: 12,
+    },
+    serviceRow: {
         flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#f5f7ff',
-        paddingBottom: 24,
-        padding: 16,
-        marginBottom: 8,
-        marginLeft: 12,
-        marginRight: 12,
-        borderRadius: 12,
+        gap: 12,
     },
-    options: {
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        backgroundColor: '#f2f2f2',
+    serviceCard: {
+        flex: 1,
+        backgroundColor: '#F8F9FA',
+        borderRadius: 12,
+        padding: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 6,
+        minHeight: 100,
+        elevation: 2,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.08,
-        shadowRadius: 2,
-        elevation: 1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
     },
-    optionsText: {
-        fontSize: 13,
-        color: '#555',
-    }
+    serviceCardWide: {
+        backgroundColor: '#F8F9FA',
+        borderRadius: 12,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: 80,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+    },
+    serviceText: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginTop: 8,
+    },
 });
 
