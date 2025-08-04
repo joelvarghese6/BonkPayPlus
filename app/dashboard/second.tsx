@@ -3,40 +3,13 @@ import { Ionicons } from "@expo/vector-icons";
 
 const tokens = [
   {
-    name: 'USDC',
-    icon: 'logo-usd',
-    ltv: '80%',
-    supply: '1,200,000',
-    supplyApr: '3.2%',
-    borrow: '800,000',
-    borrowApr: '6.1%',
-  },
-  {
     name: 'SOL',
-    icon: 'logo-bitcoin', // No SOL icon, using bitcoin as placeholder
+    icon: 'logo-bitcoin', 
     ltv: '75%',
     supply: '900,000',
     supplyApr: '4.0%',
     borrow: '600,000',
     borrowApr: '7.0%',
-  },
-  {
-    name: 'USDT',
-    icon: 'logo-usd',
-    ltv: '78%',
-    supply: '1,000,000',
-    supplyApr: '3.5%',
-    borrow: '700,000',
-    borrowApr: '6.5%',
-  },
-  {
-    name: 'BONK',
-    icon: 'paw', // Placeholder for BONK
-    ltv: '60%',
-    supply: '2,000,000',
-    supplyApr: '8.0%',
-    borrow: '1,200,000',
-    borrowApr: '12.0%',
   },
 ];
 

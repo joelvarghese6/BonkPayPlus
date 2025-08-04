@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from 'expo-clipboard';
-import { usePrivy } from "@privy-io/expo";
+import { getUserEmbeddedSolanaWallet, usePrivy } from "@privy-io/expo";
 import { router } from "expo-router";
 
 // Design constants matching home.tsx
@@ -25,9 +25,13 @@ const user = {
 
 export default function Fourth() {
 
-  const { logout } = usePrivy()
+  const { logout, user: userData } = usePrivy()
+  const account = getUserEmbeddedSolanaWallet(userData)
+
+
+  console.log(account?.address)
   const handleCopy = async () => {
-    await Clipboard.setStringAsync(user.address);
+    await Clipboard.setStringAsync(account?.address || '');
     Alert.alert('Copied', 'Address copied to clipboard');
   };
 
@@ -51,10 +55,10 @@ export default function Fourth() {
           <Ionicons name="person" size={26} color="#888" />
         </View>
         <View style={{ marginLeft: 16, flex: 1 }}>
-          <Text style={{ fontWeight: 'bold', fontSize: 20, color: textColor }}>{user.name}</Text>
+          <Text style={{ fontWeight: 'bold', fontSize: 20, color: textColor }}>{userData?.id}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
             <Text style={{ color: '#888', fontSize: 13 }} numberOfLines={1} ellipsizeMode="middle">
-              {user.address.slice(0, 6)}...{user.address.slice(-4)}
+              {account?.address.slice(0, 6)}...{account?.address.slice(-4)}
             </Text>
             <TouchableOpacity onPress={handleCopy} style={{ marginLeft: 8 }}>
               <Ionicons name="copy" size={18} color="#888" />
